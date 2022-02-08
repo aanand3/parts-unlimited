@@ -83,4 +83,21 @@ internal class ProductControllerTests {
         }
     }
 
+    @Test
+    fun `should place an order and return the amount remaining`() {
+        val productId = 33L
+        val requestedQuantity = 17
+        val itemsRemaining = -3
+
+        every { productService.placeOrder(productId, requestedQuantity) } returns itemsRemaining
+
+        mockMvc.post("/products/order/$productId/$requestedQuantity").andExpect {
+            status { isOk() }
+            content { string(containsString(itemsRemaining.toString())) }
+        }
+
+        verify(exactly = 1) {
+            productService.placeOrder(productId, requestedQuantity)
+        }
+    }
 }

@@ -3,7 +3,7 @@ import {TextField} from "@mui/material";
 import React, {useState} from "react";
 import IconButton from '@mui/material/IconButton';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {addQuantity} from "../productsApiClient";
+import {addQuantity} from "./productsApiClient";
 
 interface AddQuantityComponentProps {
     product: Product

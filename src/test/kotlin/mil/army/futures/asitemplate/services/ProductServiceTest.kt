@@ -44,14 +44,51 @@ internal class ProductServiceTest {
     @Test
     fun `should update the quantity of a product`() {
         val quantityToAdd = 17
-        val oldProduct = Product(id = 33, name = "first-product", quantity = 7)
-        val newProduct = Product(oldProduct.id, oldProduct.name, oldProduct.quantity + quantityToAdd)
+        val existingProduct = Product(id = 33, name = "first-product", quantity = 7)
+        val productWithQuantityAdded = existingProduct.copy(quantity = existingProduct.quantity + quantityToAdd)
+
+        every { productRepository.findByIdOrNull(existingProduct.id) } returns existingProduct
         every { productRepository.save(any()) } answers { firstArg() }
-        every { productRepository.findByIdOrNull(oldProduct.id) } returns oldProduct
 
-        productService.addQuantity(oldProduct.id, quantityToAdd)
+        val result = productService.addQuantity(existingProduct.id, quantityToAdd)
 
-        verify { productRepository.save(newProduct) }
+        verify { productRepository.save(productWithQuantityAdded) }
+        assertThat(result).isEqualTo(productWithQuantityAdded)
     }
 
+    @Test
+    fun `should return the amount remaining if the order was totally fulfilled`() {
+        val existingQuantity = 10
+        val requestedQuantity = 3
+        val existingProduct = Product(id = 33, name = "first-product", quantity = existingQuantity)
+        val productWithQuantitySubtracted = existingProduct.copy(
+            quantity = existingProduct.quantity - requestedQuantity
+        )
+
+        every {productRepository.findByIdOrNull(existingProduct.id)} returns existingProduct
+        every { productRepository.save(any()) } answers { firstArg() }
+
+        val result = productService.placeOrder(existingProduct.id, requestedQuantity)
+
+        verify { productRepository.save(productWithQuantitySubtracted)}
+        assertThat(result).isEqualTo(existingQuantity-requestedQuantity)
+    }
+
+    @Test
+    fun `should return the amount unfulfilled if there were too few items`() {
+        val existingQuantity = 10
+        val requestedQuantity = 13
+        val existingProduct = Product(id = 33, name = "first-product", quantity = existingQuantity)
+        val productWithNoItemsRemaining = existingProduct.copy(
+            quantity = 0
+        )
+
+        every {productRepository.findByIdOrNull(existingProduct.id)} returns existingProduct
+        every { productRepository.save(any()) } answers { firstArg() }
+
+        val result = productService.placeOrder(existingProduct.id, requestedQuantity)
+
+        verify { productRepository.save(productWithNoItemsRemaining)}
+        assertThat(result).isEqualTo(existingQuantity - requestedQuantity)
+    }
 }

@@ -16,12 +16,26 @@ class ProductService(private val productRepository: ProductRepository) {
     }
 
     fun addQuantity(productId: Long, quantityToAdd: Int): Product {
-        val oldProduct = productRepository.findByIdOrNull(productId) ?: error("product does not exist")
-        val newProduct = oldProduct.copy(quantity = oldProduct.quantity+quantityToAdd)
+        val existingProduct = productRepository.findByIdOrNull(productId) ?: error("product does not exist")
+        val newProduct = existingProduct.copy(quantity = existingProduct.quantity + quantityToAdd)
         return productRepository.save(newProduct)
     }
 
-    fun placeOrder(): Int {
+    fun placeOrder(productId: Long, requestedQuantity: Int): Int {
+        val existingProduct = productRepository.findByIdOrNull(productId) ?: error("product does not exist")
 
+        val itemsRemaining = existingProduct.quantity - requestedQuantity
+        if (itemsRemaining >= 0) {
+            val productWithQuantitySubtracted = existingProduct.copy(
+                quantity = itemsRemaining
+            )
+            productRepository.save(productWithQuantitySubtracted)
+        } else {
+            val productWithNoItemsRemaining = existingProduct.copy(
+                quantity = 0
+            )
+            productRepository.save(productWithNoItemsRemaining)
+        }
+        return itemsRemaining
     }
 }

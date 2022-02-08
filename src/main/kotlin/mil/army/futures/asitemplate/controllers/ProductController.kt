@@ -20,5 +20,9 @@ class ProductController(private val productService: ProductService) {
     @PostMapping("/add/{productId}/{quantityToAdd}")
     fun addQuantity(@PathVariable productId: Long, @PathVariable quantityToAdd: Int) : Int =
         productService.addQuantity(productId, quantityToAdd).quantity
+
+    @PostMapping("/order/{productId}/{requestedQuantity}")
+    fun placeOrder(@PathVariable productId: Long, @PathVariable requestedQuantity: Int) : Int =
+        productService.placeOrder(productId, requestedQuantity)
 }
 

@@ -1,5 +1,5 @@
 import React, {FormEvent, useEffect, useState} from "react";
-import {createProduct, getProducts} from "./productsApiClient";
+import {createProduct, getProducts} from "./product/productsApiClient";
 import {Box, Container} from "@mui/material";
 import {Product} from "./product";
 import {InventoryTable} from "./inventory/InventoryTable";

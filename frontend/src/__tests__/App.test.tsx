@@ -2,7 +2,7 @@ import React from "react";
 import {render, screen} from "@testing-library/react";
 import App from "../App";
 import userEvent from "@testing-library/user-event";
-import {addQuantity, createProduct, getProducts} from "../productsApiClient";
+import {addQuantity, createProduct, getProducts} from "../product/productsApiClient";
 
 jest.mock("../productsApiClient");
 
@@ -12,7 +12,7 @@ const mockAddQuantity = addQuantity as jest.MockedFunction<typeof addQuantity>;
 
 const addProduct = (product: string) => {
   userEvent.type(screen.getByLabelText("Product to add"), product);
-  userEvent.click(screen.getByRole("button", {name: /submit/i}));
+  userEvent.click(screen.getByLabelText(/add product/i));
 }
 
 const addQuantityToProduct = (quantityToAdd: number) => {
