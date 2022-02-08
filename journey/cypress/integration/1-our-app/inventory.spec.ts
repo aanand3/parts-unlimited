@@ -1,15 +1,17 @@
-const addProduct = (product: string) => {
-    cy.findByLabelText("Product to add").type(product);
-    cy.findByRole("button").click();
+const addProduct = (product: string, modelNumber: number = 234) => {
+    cy.findByLabelText("product name").type(product);
+    cy.findByLabelText("model number").type(modelNumber.toString());
+    cy.findByLabelText(/add product/i).click();
 }
 
 describe("inventory", () => {
     describe("when adding a product offering", () => {
         it("should display the new product with a default quantity of 0", () => {
             cy.visit("http://localhost:8080");
-            addProduct("shiny-new-product");
+            addProduct("shiny-new-product", 456);
             cy.findByText("shiny-new-product").should("exist");
             cy.findByText("0").should("exist");
+            cy.findByText("456").should("exist");
         });
     });
     describe('changing quantity', () => {

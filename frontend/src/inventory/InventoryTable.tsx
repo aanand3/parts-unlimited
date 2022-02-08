@@ -24,9 +24,10 @@ export const InventoryTable = (props: InventoryTableProps) => {
                 <TableHead>
                     <TableRow>
                         <TableCell>Part</TableCell>
-                        <TableCell align="right">Current Quantity</TableCell>
-                        <TableCell align="center">Add More Items</TableCell>
-                        <TableCell align="center">Place An Order</TableCell>
+                        <TableCell>Model Number</TableCell>
+                        <TableCell align="right">Quantity</TableCell>
+                        <TableCell align="center">Add More</TableCell>
+                        <TableCell align="center">Place Order</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -38,6 +39,7 @@ export const InventoryTable = (props: InventoryTableProps) => {
                             <TableCell component="th" scope="row">
                                 <strong>{product.name}</strong>
                             </TableCell>
+                            <TableCell align="right">{product.modelNumber}</TableCell>
                             <TableCell align="right">{product.quantity}</TableCell>
                             <TableCell align="center">
                                 <AddQuantityComponent product={product} fetchInventory={fetchInventory}/>

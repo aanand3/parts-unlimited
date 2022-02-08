@@ -1,11 +1,14 @@
 import React, {FormEvent, useEffect, useState} from "react";
 import {createProduct, getProducts} from "./product/productsApiClient";
-import {Box, Container} from "@mui/material";
+import {Box, Container, TextField} from "@mui/material";
 import {Product} from "./product";
 import {InventoryTable} from "./inventory/InventoryTable";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import IconButton from "@mui/material/IconButton";
 
 const App = () => {
     const [productName, setProductName] = useState<string>("");
+    const [modelNumber, setModelNumber] = useState(0);
     const [products, setProducts] = useState<Product[]>([]);
 
     const setProductNameFromInput = (event: FormEvent<HTMLInputElement>) => {
@@ -14,7 +17,7 @@ const App = () => {
 
     const submitForm = (event: FormEvent) => {
         event.preventDefault();
-        createProduct(productName).then(() => {
+        createProduct(productName, modelNumber).then(() => {
             getProducts().then(setProducts);
         });
     };
@@ -34,11 +37,35 @@ const App = () => {
             <Box display='flex' flexDirection='row'>
                 <form onSubmit={submitForm}>
                     <br/>
-                    <label>
-                        Product to add
-                        <input name="product" type="text" onChange={setProductNameFromInput}/>
-                    </label>
-                    <button type="submit" aria-label="add product">Submit</button>
+                    <TextField
+                        value={modelNumber}
+                        onChange={(event) => setModelNumber(+event.target.value)}
+                        id="outlined-number"
+                        label="model number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+
+                    <TextField
+                        value={productName}
+                        onChange={(event) => setProductName(event.target.value)}
+                        id="outlined-text"
+                        label="product name"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+
+                    <IconButton
+                        color="success"
+                        size="large"
+                        aria-label="add product"
+                        type="submit"
+                    >
+                        <AddCircleOutlineIcon/>
+                    </IconButton>
+
                 </form>
             </Box>
         </Container>

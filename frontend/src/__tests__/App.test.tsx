@@ -11,8 +11,9 @@ const mockCreateProduct = createProduct as jest.MockedFunction<typeof createProd
 const mockAddQuantity = addQuantity as jest.MockedFunction<typeof addQuantity>;
 const mockPlaceOrder = placeOrder as jest.MockedFunction<typeof placeOrder>;
 
-const addProduct = (product: string) => {
-    userEvent.type(screen.getByLabelText("Product to add"), product);
+const addProduct = (product: string, modelNumber: number = 234) => {
+    userEvent.type(screen.getByLabelText(/product name/), product);
+    userEvent.type(screen.getByLabelText(/model number/), modelNumber.toString());
     userEvent.click(screen.getByLabelText(/add product/i));
 }
 
@@ -29,7 +30,7 @@ const orderProduct = (quantityToRequest: number) => {
 describe("inventory", () => {
     describe("when I view the inventory", () => {
         it("should display the products", async () => {
-            mockGetProducts.mockResolvedValue([{id: 33, name: "a product", quantity: 0}]);
+            mockGetProducts.mockResolvedValue([{id: 33, name: "a product", quantity: 0, modelNumber: 234}]);
 
             render(<App/>);
 
@@ -37,7 +38,7 @@ describe("inventory", () => {
         });
 
         it("should display the products' quantities", async () => {
-            mockGetProducts.mockResolvedValue([{id: 33, name: "a product", quantity: 0}]);
+            mockGetProducts.mockResolvedValue([{id: 33, name: "a product", quantity: 0, modelNumber: 234}]);
 
             render(<App/>);
 
@@ -48,15 +49,16 @@ describe("inventory", () => {
 
     describe("when I add a new product", () => {
         it("should display the new product", async () => {
-            mockCreateProduct.mockResolvedValueOnce({id: 33, name: "shiny new product", quantity: 0});
+            mockCreateProduct.mockResolvedValueOnce({id: 33, name: "shiny new product", quantity: 0, modelNumber: 234});
             mockGetProducts.mockResolvedValueOnce([]);
-            mockGetProducts.mockResolvedValueOnce([{id: 33, name: "shiny new product", quantity: 0}]);
+            mockGetProducts.mockResolvedValueOnce([{id: 33, name: "shiny new product", quantity: 0, modelNumber: 234}]);
 
             render(<App/>);
-            addProduct("shiny new product");
+            addProduct("shiny new product", 333);
 
-            expect(mockCreateProduct).toHaveBeenCalledWith("shiny new product");
+            expect(mockCreateProduct).toHaveBeenCalledWith("shiny new product", 333);
             expect(await screen.findByText("shiny new product")).toBeInTheDocument();
+            expect(await screen.findByText("234")).toBeInTheDocument();
         });
     });
 
@@ -67,11 +69,17 @@ describe("inventory", () => {
             const quantityToAdd = 17;
 
             mockAddQuantity.mockResolvedValueOnce(quantityToAdd);
-            mockGetProducts.mockResolvedValueOnce([{id: 33, name: "shiny new product", quantity: oldQuantity}]);
+            mockGetProducts.mockResolvedValueOnce([{
+                id: 33,
+                name: "shiny new product",
+                quantity: oldQuantity,
+                modelNumber: 234
+            }]);
             mockGetProducts.mockResolvedValueOnce([{
                 id: productId,
                 name: "shiny new product",
                 quantity: oldQuantity + quantityToAdd
+                , modelNumber: 234
             }]);
 
             render(<App/>);
@@ -93,11 +101,17 @@ describe("inventory", () => {
             const itemsRemaining = oldQuantity - quantityToRequest;
 
             mockPlaceOrder.mockResolvedValueOnce(itemsRemaining);
-            mockGetProducts.mockResolvedValueOnce([{id: 33, name: productName, quantity: oldQuantity}]);
+            mockGetProducts.mockResolvedValueOnce([{
+                id: 33,
+                name: productName,
+                quantity: oldQuantity,
+                modelNumber: 234
+            }]);
             mockGetProducts.mockResolvedValue([{
                 id: productId,
                 name: productName,
                 quantity: itemsRemaining
+                , modelNumber: 234
             }]);
 
             render(<App/>);
@@ -119,11 +133,17 @@ describe("inventory", () => {
             const itemsRemaining = oldQuantity - quantityToRequest;
 
             mockPlaceOrder.mockResolvedValueOnce(itemsRemaining);
-            mockGetProducts.mockResolvedValueOnce([{id: 33, name: productName, quantity: oldQuantity}]);
+            mockGetProducts.mockResolvedValueOnce([{
+                id: 33,
+                name: productName,
+                quantity: oldQuantity,
+                modelNumber: 234
+            }]);
             mockGetProducts.mockResolvedValue([{
                 id: productId,
                 name: productName,
                 quantity: 0
+                , modelNumber: 234
             }]);
 
             render(<App/>);

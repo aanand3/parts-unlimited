@@ -17,16 +17,17 @@ describe('productsApiClient', () => {
         it('should make a POST request to create a product', async () => {
             const scope = nock('http://localhost', {
                 reqheaders: {
-                    'Content-Type': 'text/plain'
+                    'Content-Type': 'application/json'
                 }
-            }).post('/products', 'my-new-product')
-                .reply(200, {name: "my-new-product", quantity: 0});
+            }).post('/products', "{\"productName\":\"my-new-product\",\"modelNumber\":234}")
+                .reply(200, {name: "my-new-product", quantity: 0, modelNumber: 234});
 
-            const response = await createProduct("my-new-product");
+            const response = await createProduct("my-new-product", 234);
 
             expect(scope.isDone()).toEqual(true);
             expect(response.name).toEqual("my-new-product");
             expect(response.quantity).toEqual(0);
+            expect(response.modelNumber).toEqual(234);
         });
     });
 

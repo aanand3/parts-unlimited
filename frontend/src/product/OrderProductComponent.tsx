@@ -34,9 +34,6 @@ export const OrderProductComponent = (props: OrderProductComponentProps) => {
             Your delivery will be short ${itemsNotOrdered} items.`
             )
             setShowSuccessMessage(true)
-
-            // setFailureMessage(`Note that your order was NOT completely fulfilled. Your delivery will be short ${itemsNotOrdered} items.`)
-            // setShowFailureMessage(true)
         }
         fetchInventory();
         setQuantityToOrder(0)
@@ -74,12 +71,6 @@ export const OrderProductComponent = (props: OrderProductComponentProps) => {
                 autoHideDuration={6000}
                 onClose={handleClose}
                 message={successMessage}
-            />
-            <Snackbar
-                open={showFailureMessage}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                message={failureMessage}
             />
         </>
 
