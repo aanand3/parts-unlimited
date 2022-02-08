@@ -8,3 +8,7 @@ export async function createProduct(product: string): Promise<Product> {
 export async function getProducts(): Promise<Product[]> {
   return (await axios.get<Product[]>("/products")).data
 }
+
+export async function addQuantity(productId: number, quantityToAdd: number): Promise<number> {
+  return (await axios.post<number>(`/products/add/${productId}/${quantityToAdd}`)).data
+}

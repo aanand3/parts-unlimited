@@ -62,13 +62,25 @@ internal class ProductControllerTests {
     }
 
     @Test
-    fun `should say hi`() {
+    fun `should add a given quantity to a product`() {
+        val testProductId = 33L
+        val testQuantityToAdd = 17
+        val updatedProduct = Product(
+            id = testProductId,
+            name = "test-product-name",
+            quantity = testQuantityToAdd
+        )
 
-        mockMvc.get("/hi").andExpect {
+        every { productService.addQuantity(testProductId, testQuantityToAdd) } returns updatedProduct
+
+        mockMvc.post("/products/add/$testProductId/$testQuantityToAdd").andExpect {
             status { isOk() }
-            content { string(containsString("hi")) }
+            content { string(containsString(testQuantityToAdd.toString())) }
         }
 
+        verify(exactly = 1) {
+            productService.addQuantity(testProductId, testQuantityToAdd)
+        }
     }
 
 }

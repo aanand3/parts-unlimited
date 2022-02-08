@@ -1,5 +1,5 @@
 import nock from 'nock';
-import {createProduct, getProducts} from "../productsApiClient";
+import {addQuantity, createProduct, getProducts} from "../productsApiClient";
 
 describe('productsApiClient', () => {
     describe('getProducts', () => {
@@ -27,6 +27,22 @@ describe('productsApiClient', () => {
             expect(scope.isDone()).toEqual(true);
             expect(response.name).toEqual("my-new-product");
             expect(response.quantity).toEqual(0);
+        });
+    });
+
+    describe('addQuantity', () => {
+        it('should make a post request to update the product quantity', async () => {
+            const testProductId = 33;
+            const testQuantityToAdd = 17;
+
+            const scope = nock('http://localhost')
+                .post(`/products/add/${testProductId}/${testQuantityToAdd}`)
+                .reply(200, `${testQuantityToAdd}`);
+
+            const response = await addQuantity(testProductId, testQuantityToAdd);
+
+            expect(scope.isDone()).toEqual(true);
+            expect(response).toEqual(testQuantityToAdd);
         });
     });
 });

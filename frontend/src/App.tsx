@@ -2,10 +2,11 @@ import React, {FormEvent, useEffect, useState} from "react";
 import {createProduct, getProducts} from "./productsApiClient";
 import {Box, Container} from "@mui/material";
 import {Product} from "./product";
+import {InventoryTable} from "./inventory/InventoryTable";
 
 const App = () => {
-    const [products, setProducts] = useState<Product[]>([]);
     const [productName, setProductName] = useState<string>("");
+    const [products, setProducts] = useState<Product[]>([]);
 
     const setProductNameFromInput = (event: FormEvent<HTMLInputElement>) => {
         setProductName(event.currentTarget.value);
@@ -18,34 +19,27 @@ const App = () => {
         });
     };
 
-    useEffect(() => {
+    function fetchInventory() {
         getProducts().then(setProducts);
+    }
+
+    useEffect(() => {
+        fetchInventory();
     }, []);
 
     return (
         <Container sx={{mx: 1, my: 1}}>
             <h1>Parts Unlimited Inventory</h1>
+            <InventoryTable products={products} fetchInventory={fetchInventory}/>
             <Box display='flex' flexDirection='row'>
-                <Box>
-                    <h2>Product</h2>
-                    {products.map((product, index) => (
-                        <div key={index}>{product.name}</div>
-                    ))}
-                    <form onSubmit={submitForm}>
-                        <br/>
-                        <label>
-                            Product to add
-                            <input name="product" type="text" onChange={setProductNameFromInput}/>
-                        </label>
-                        <button type="submit">Submit</button>
-                    </form>
-                </Box>
-                <Box>
-                    <h2>Quantity</h2>
-                    {products.map((product, index) => (
-                        <div key={index}>{product.quantity}</div>
-                    ))}
-                </Box>
+                <form onSubmit={submitForm}>
+                    <br/>
+                    <label>
+                        Product to add
+                        <input name="product" type="text" onChange={setProductNameFromInput}/>
+                    </label>
+                    <button type="submit" aria-label="add product">Submit</button>
+                </form>
             </Box>
         </Container>
     );
