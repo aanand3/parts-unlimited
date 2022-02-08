@@ -27,8 +27,19 @@ const orderProduct = (quantityToRequest: number) => {
     userEvent.click(screen.getByLabelText("request quantity"));
 }
 
-describe("inventory", () => {
+describe("Parts Unlimited", () => {
     describe("when I view the inventory", () => {
+        it('should display all the basic elements', async () => {
+            mockGetProducts.mockResolvedValue([]);
+
+            render(<App/>);
+
+            expect(await screen.findByText(/Parts Unlimited Inventory/i)).toBeVisible();
+
+            expect(await screen.getByLabelText(/product name/)).toBeVisible()
+            expect(await screen.getByLabelText(/model number/)).toBeVisible()
+            expect(await screen.getByLabelText(/add product/i)).toBeVisible()
+        });
         it("should display the products", async () => {
             mockGetProducts.mockResolvedValue([{id: 33, name: "a product", quantity: 0, modelNumber: 234}]);
 
@@ -42,7 +53,7 @@ describe("inventory", () => {
 
             render(<App/>);
 
-            expect(screen.getByText(/Current Quantity/i)).toBeInTheDocument();
+            expect(screen.getByText(/Quantity/i)).toBeInTheDocument();
             expect(await screen.findByText("0")).toBeInTheDocument();
         });
     });

@@ -35,6 +35,7 @@ const App = () => {
             <h1>Parts Unlimited Inventory</h1>
             <InventoryTable products={products} fetchInventory={fetchInventory}/>
             <Box display='flex' flexDirection='row'>
+                <h1>Add a new part:</h1>
                 <form onSubmit={submitForm}>
                     <br/>
                     <TextField

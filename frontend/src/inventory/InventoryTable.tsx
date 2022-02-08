@@ -23,11 +23,11 @@ export const InventoryTable = (props: InventoryTableProps) => {
             <Table sx={{minWidth: 650}} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Part</TableCell>
+                        <TableCell>Product Name</TableCell>
                         <TableCell>Model Number</TableCell>
-                        <TableCell align="right">Quantity</TableCell>
-                        <TableCell align="center">Add More</TableCell>
-                        <TableCell align="center">Place Order</TableCell>
+                        <TableCell >Quantity</TableCell>
+                        <TableCell >Add More</TableCell>
+                        <TableCell >Place Order</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
