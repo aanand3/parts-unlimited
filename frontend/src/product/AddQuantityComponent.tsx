@@ -27,11 +27,9 @@ export const AddQuantityComponent = (props: AddQuantityComponentProps) => {
                 onChange={(event) => setQuantityToAdd(+event.target.value)}
                 id="outlined-number"
                 label="amount to add"
-                color="success"
                 InputLabelProps={{
                     shrink: true,
                 }}
-                focused
             />
             <IconButton
                 color="success"

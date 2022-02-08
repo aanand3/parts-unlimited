@@ -53,7 +53,7 @@ describe('productsApiClient', () => {
             const itemsRemaining = 14;
 
             const scope = nock('http://localhost')
-                .post(`/products/add/${productId}/${requestedQuantity}`)
+                .post(`/products/order/${productId}/${requestedQuantity}`)
                 .reply(200, `${itemsRemaining}`);
 
             const response = await placeOrder(productId, requestedQuantity);

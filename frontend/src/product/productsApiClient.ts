@@ -14,5 +14,5 @@ export async function addQuantity(productId: number, quantityToAdd: number): Pro
 }
 
 export async function placeOrder(productId: number, requestedQuantity: number): Promise<number> {
-  return (await axios.post<number>(`/products/add/${productId}/${requestedQuantity}`)).data
+  return (await axios.post<number>(`/products/order/${productId}/${requestedQuantity}`)).data
 }
