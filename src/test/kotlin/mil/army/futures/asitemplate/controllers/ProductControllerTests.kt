@@ -26,30 +26,31 @@ internal class ProductControllerTests {
 
     @Test
     fun `should save a new product when a new product is created`() {
-        every { productService.addProduct("first-product-name") } returns Product(
+        every { productService.addProduct("first-product-name", 234) } returns Product(
             id = 1L,
             name = "first-product-name",
-            quantity = 0
+            quantity = 0,
+            modelNumber = 234
         )
 
         mockMvc.post("/products") {
-            contentType = MediaType.TEXT_PLAIN
-            content = "first-product-name"
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"productName": "first-product-name","modelNumber":234}"""
         }.andExpect {
             status { isOk() }
             content { string(containsString("first-product-name")) }
         }
 
         verify(exactly = 1) {
-            productService.addProduct("first-product-name")
+            productService.addProduct("first-product-name", 234)
         }
     }
 
     @Test
     fun `should retrieve all products when getting products`() {
         every { productService.getProducts() } returns listOf(
-            Product(id = 1L, name = "first-product-name", quantity = 0),
-            Product(id = 2L, name = "second-product-name", quantity = 0)
+            Product(1L, "first-product-name",  0, 234),
+            Product(2L, "second-product-name",  0, 234)
         )
 
         mockMvc.get("/products").andExpect {
@@ -66,9 +67,10 @@ internal class ProductControllerTests {
         val testProductId = 33L
         val testQuantityToAdd = 17
         val updatedProduct = Product(
-            id = testProductId,
-            name = "test-product-name",
-            quantity = testQuantityToAdd
+            testProductId,
+            "test-product-name",
+            testQuantityToAdd,
+            234
         )
 
         every { productService.addQuantity(testProductId, testQuantityToAdd) } returns updatedProduct

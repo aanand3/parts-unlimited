@@ -22,7 +22,7 @@ internal class ProductServiceTest {
 
     @Test
     fun `should retrieve all products`() {
-        val expectedProducts = listOf(Product(1L, "first-product", 0), Product(2L, "second-product", 0))
+        val expectedProducts = listOf(Product(1L, "first-product", 0, 234), Product(2L, "second-product", 0, 456))
         every { productRepository.findAll() } returns expectedProducts
 
         val actualProducts: List<Product> = productService.getProducts()
@@ -34,9 +34,10 @@ internal class ProductServiceTest {
     fun `should create a new product`() {
         every { productRepository.save(any()) } answers { firstArg() }
         val productName = "first-product"
-        val productToSave = Product(name = productName, quantity = 0)
+        val modelNumber = 234
+        val productToSave = Product(name = productName, quantity = 0, modelNumber = modelNumber)
 
-        productService.addProduct(productName)
+        productService.addProduct(productName, modelNumber)
 
         verify { productRepository.save(productToSave) }
     }
@@ -44,7 +45,7 @@ internal class ProductServiceTest {
     @Test
     fun `should update the quantity of a product`() {
         val quantityToAdd = 17
-        val existingProduct = Product(id = 33, name = "first-product", quantity = 7)
+        val existingProduct = Product(33,"first-product", 7, 234)
         val productWithQuantityAdded = existingProduct.copy(quantity = existingProduct.quantity + quantityToAdd)
 
         every { productRepository.findByIdOrNull(existingProduct.id) } returns existingProduct
@@ -60,7 +61,7 @@ internal class ProductServiceTest {
     fun `should return the amount remaining if the order was totally fulfilled`() {
         val existingQuantity = 10
         val requestedQuantity = 3
-        val existingProduct = Product(id = 33, name = "first-product", quantity = existingQuantity)
+        val existingProduct = Product(33,"first-product", existingQuantity, 234)
         val productWithQuantitySubtracted = existingProduct.copy(
             quantity = existingProduct.quantity - requestedQuantity
         )
@@ -78,7 +79,7 @@ internal class ProductServiceTest {
     fun `should return the amount unfulfilled if there were too few items`() {
         val existingQuantity = 10
         val requestedQuantity = 13
-        val existingProduct = Product(id = 33, name = "first-product", quantity = existingQuantity)
+        val existingProduct = Product(33,"first-product", existingQuantity, 234)
         val productWithNoItemsRemaining = existingProduct.copy(
             quantity = 0
         )

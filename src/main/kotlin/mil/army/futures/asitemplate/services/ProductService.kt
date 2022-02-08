@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class ProductService(private val productRepository: ProductRepository) {
-    fun addProduct(product: String): Product {
-        return productRepository.save(Product(name = product, quantity = 0))
+    fun addProduct(product: String, modelNumber: Int): Product {
+        return productRepository.save(Product(name = product, quantity = 0, modelNumber = modelNumber))
     }
 
     fun getProducts(): List<Product> {

@@ -13,8 +13,11 @@ class ProductController(private val productService: ProductService) {
         productService.getProducts()
 
     @PostMapping
-    fun addProduct(@RequestBody product: String): Product =
-         productService.addProduct(product)
+    fun addProduct(@RequestBody json: Map<String, String> ): Product {
+        val productName = json["productName"] ?: error("no product name passed")
+        val modelNumber = json["modelNumber"]?.toInt() ?: error("no model number passed")
+        return productService.addProduct(productName, modelNumber)
+    }
 
 
     @PostMapping("/add/{productId}/{quantityToAdd}")

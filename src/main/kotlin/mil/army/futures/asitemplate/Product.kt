@@ -13,5 +13,7 @@ data class Product(
 
     val name: String,
 
-    val quantity: Int
+    val quantity: Int,
+
+    val modelNumber: Int
 )
