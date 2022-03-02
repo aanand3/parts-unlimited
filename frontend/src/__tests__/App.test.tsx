@@ -3,6 +3,7 @@ import {render, screen} from "@testing-library/react";
 import App from "../App";
 import userEvent from "@testing-library/user-event";
 import {addQuantity, createProduct, getProducts, placeOrder} from "../product/productsApiClient";
+import {createTestProduct, testProduct} from "./TestHelpers";
 
 jest.mock("../product/productsApiClient");
 
@@ -17,7 +18,7 @@ const addProduct = (product: string, modelNumber: number = 234) => {
     userEvent.click(screen.getByLabelText(/add product/i));
 }
 
-const addQuantityToProduct = (quantityToAdd: number) => {
+const whenIAddQuantityToAProduct = (quantityToAdd: number) => {
     userEvent.type(screen.getByLabelText("amount to add"), quantityToAdd.toString());
     userEvent.click(screen.getByLabelText("add quantity"));
 }
@@ -75,28 +76,21 @@ describe("Parts Unlimited", () => {
 
     describe('when I add quantity to a product', () => {
         it('should update the amount shown in the table', async () => {
+            // Given a product
+            // When I add an inventory quantity of that product
+            // Then I see that the total inventory for that product has increased by the amount added
             const productId = 33;
             const oldQuantity = 3;
             const quantityToAdd = 17;
 
             mockAddQuantity.mockResolvedValueOnce(quantityToAdd);
-            mockGetProducts.mockResolvedValueOnce([{
-                id: 33,
-                name: "shiny new product",
-                quantity: oldQuantity,
-                modelNumber: 234
-            }]);
-            mockGetProducts.mockResolvedValueOnce([{
-                id: productId,
-                name: "shiny new product",
-                quantity: oldQuantity + quantityToAdd
-                , modelNumber: 234
-            }]);
+            mockGetProducts.mockResolvedValueOnce([createTestProduct({quantity: oldQuantity})]);
+            mockGetProducts.mockResolvedValueOnce([createTestProduct({quantity: oldQuantity + quantityToAdd})]);
 
             render(<App/>);
 
-            expect(await screen.findByText("shiny new product")).toBeVisible();
-            addQuantityToProduct(quantityToAdd);
+            expect(await screen.findByText(oldQuantity)).toBeVisible();
+            whenIAddQuantityToAProduct(quantityToAdd);
 
             expect(mockAddQuantity).toHaveBeenCalledWith(productId, quantityToAdd);
             expect(await screen.findByText(oldQuantity + quantityToAdd)).toBeVisible();
@@ -105,25 +99,15 @@ describe("Parts Unlimited", () => {
 
     describe('when I order a product', () => {
         it('should let me know that the order was successful', async () => {
-            const productName = "shiny new product"
+            const productName = "purple lightsaber"
             const productId = 33;
             const oldQuantity = 10;
             const quantityToRequest = 7;
             const itemsRemaining = oldQuantity - quantityToRequest;
 
             mockPlaceOrder.mockResolvedValueOnce(itemsRemaining);
-            mockGetProducts.mockResolvedValueOnce([{
-                id: 33,
-                name: productName,
-                quantity: oldQuantity,
-                modelNumber: 234
-            }]);
-            mockGetProducts.mockResolvedValue([{
-                id: productId,
-                name: productName,
-                quantity: itemsRemaining
-                , modelNumber: 234
-            }]);
+            mockGetProducts.mockResolvedValueOnce([createTestProduct({name: productName, quantity: oldQuantity})]);
+            mockGetProducts.mockResolvedValueOnce([createTestProduct({name: productName, quantity: itemsRemaining})]);
 
             render(<App/>);
 
@@ -137,29 +121,18 @@ describe("Parts Unlimited", () => {
         });
 
         it('should let me know that the order was partially successful', async () => {
-            const productName = "shiny new product"
             const productId = 33;
             const oldQuantity = 10;
             const quantityToRequest = 20;
             const itemsRemaining = oldQuantity - quantityToRequest;
 
             mockPlaceOrder.mockResolvedValueOnce(itemsRemaining);
-            mockGetProducts.mockResolvedValueOnce([{
-                id: 33,
-                name: productName,
-                quantity: oldQuantity,
-                modelNumber: 234
-            }]);
-            mockGetProducts.mockResolvedValue([{
-                id: productId,
-                name: productName,
-                quantity: 0
-                , modelNumber: 234
-            }]);
+            mockGetProducts.mockResolvedValueOnce([createTestProduct({quantity: oldQuantity})]);
+            mockGetProducts.mockResolvedValueOnce([createTestProduct({quantity: 0})]);
 
             render(<App/>);
 
-            expect(await screen.findByText(productName)).toBeVisible();
+            expect(await screen.findByText(testProduct.name)).toBeVisible();
 
             orderProduct(quantityToRequest)
 
@@ -171,3 +144,4 @@ describe("Parts Unlimited", () => {
         });
     });
 });
+
